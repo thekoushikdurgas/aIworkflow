@@ -1,0 +1,54 @@
+{
+  "auth": {
+    "api_key": "AIzaSyDUrrvm3__BaErVe8zt6ZNRdruoA9AAqfE",
+    "use_vertex_ai": false,
+    "project_id": "gen-lang-client-0315931233",
+    "location": "us-central1"
+  },
+  "model": {
+    "selected_model": "gemini-2.5-flash",
+    "temperature": 0.7,
+    "top_p": 0.95,
+    "top_k": 40,
+    "max_output_tokens": 2048,
+    "thinking_budget": 0,
+    "system_instruction": "",
+    "safety_settings": "{\"hate_speech\": \"BLOCK_MEDIUM_AND_ABOVE\", \"dangerous_content\": \"BLOCK_MEDIUM_AND_ABOVE\", \"harassment\": \"BLOCK_MEDIUM_AND_ABOVE\", \"sexually_explicit\": \"BLOCK_MEDIUM_AND_ABOVE\"}"
+  },
+  "chat": {
+    "current_chat_session": "",
+    "chat_sessions": {},
+    "stream_responses": true,
+    "enable_function_calling": false
+  },
+  "file": {
+    "uploaded_files": {}
+  },
+  "media": {
+    "generated_images": [],
+    "generated_videos": [],
+    "image_generation_settings": {
+      "model": "imagen-4.0-fast-generate-001",
+      "number_of_images": 1,
+      "aspect_ratio": "1:1",
+      "person_generation": "ALLOW_ADULT"
+    }
+  },
+  "function": {
+    "custom_functions": [],
+    "function_schemas": {}
+  },
+  "ui": {
+    "auto_save": true,
+    "debug_mode": false,
+    "theme": "Light"
+  },
+  "_metadata": {
+    "version": "1.0.0",
+    "format": "json",
+    "last_updated": "2025-09-07T12:52:44.960544"
+  },
+  "test": {
+    "key": "value"
+  }
+}

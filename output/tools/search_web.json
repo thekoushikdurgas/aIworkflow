@@ -1,0 +1,21 @@
+{
+  "name": "search_web",
+  "description": "Search the web for information (mock implementation for demo)",
+  "category": "information",
+  "parameters": [
+    {
+      "name": "query",
+      "type": "string",
+      "description": "Search query",
+      "required": true
+    },
+    {
+      "name": "num_results",
+      "type": "integer",
+      "description": "Number of results to return (1-10)",
+      "required": false
+    }
+  ],
+  "code": "search_web.py",
+  "enabled": true
+}

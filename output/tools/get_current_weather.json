@@ -1,0 +1,15 @@
+{
+  "name": "get_current_weather",
+  "description": "Get current weather information for a location",
+  "category": "utility",
+  "parameters": [
+    {
+      "name": "location",
+      "type": "string",
+      "description": "The city and state, e.g. San Francisco, CA",
+      "required": true
+    }
+  ],
+  "code": "get_current_weather.py",
+  "enabled": true
+}

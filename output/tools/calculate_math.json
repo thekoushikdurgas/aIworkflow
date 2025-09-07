@@ -1,0 +1,16 @@
+{
+    "name": "calculate_math",
+    "description": "Safely evaluate mathematical expressions",
+    "category": "utility",
+    "parameters": [
+      {
+        "name": "expression",
+        "type": "string",
+        "description": "The expression to evaluate, e.g. 1 + 1",
+        "required": true
+      }
+    ],
+    "code": "calculate_math.py",
+    "enabled": true
+  }
+  

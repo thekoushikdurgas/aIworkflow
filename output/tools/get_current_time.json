@@ -1,0 +1,15 @@
+{
+  "name": "get_current_time",
+  "description": "Get current date and time in specified timezone",
+  "category": "information",
+  "parameters": [
+    {
+      "name": "timezone",
+      "type": "string",
+      "description": "Timezone (e.g., 'UTC', 'US/Pacific', 'Europe/London')",
+      "required": false
+    }
+  ],
+  "code": "get_current_time.py",
+  "enabled": true
+}

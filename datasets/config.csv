@@ -1,0 +1,26 @@
+category,key,value,data_type,persist,updated_at
+auth,api_key,AIzaSyDUrrvm3__BaErVe8zt6ZNRdruoA9AAqfE,str,true,2025-09-07T06:38:24.207658
+auth,use_vertex_ai,false,bool,true,2025-09-07T06:38:24.205528
+auth,project_id,gen-lang-client-0315931233,str,true,2025-09-07T06:38:24.205528
+auth,location,us-central1,str,true,2025-09-07T06:38:24.205528
+model,selected_model,gemini-2.5-flash,str,true,2025-09-07T06:38:24.205528
+model,temperature,0.7,float,true,2025-09-07T06:38:24.205528
+model,top_p,0.95,float,true,2025-09-07T06:38:24.205528
+model,top_k,40,int,true,2025-09-07T06:38:24.205528
+model,max_output_tokens,2048,int,true,2025-09-07T06:38:24.205528
+model,thinking_budget,0,int,true,2025-09-07T06:38:24.205528
+model,system_instruction,,str,true,2025-09-07T06:38:24.205528
+model,safety_settings,{},dict,true,2025-09-07T06:38:24.205528
+chat,current_chat_session,,str,true,2025-09-07T06:38:24.205528
+chat,chat_sessions,{},dict,true,2025-09-07T06:38:24.205528
+chat,stream_responses,true,bool,true,2025-09-07T06:38:24.205528
+chat,enable_function_calling,false,bool,true,2025-09-07T06:38:24.205528
+file,uploaded_files,{},dict,true,2025-09-07T06:38:24.205528
+media,generated_images,[],list,true,2025-09-07T06:38:24.205528
+media,generated_videos,[],list,true,2025-09-07T06:38:24.205528
+media,image_generation_settings,"{""model"": ""imagen-4.0-fast-generate-001"", ""number_of_images"": 1, ""aspect_ratio"": ""1:1"", ""person_generation"": ""ALLOW_ADULT""}",dict,true,2025-09-07T06:38:24.205528
+function,custom_functions,[],list,true,2025-09-07T06:38:24.205528
+function,function_schemas,{},dict,true,2025-09-07T06:38:24.205528
+ui,auto_save,true,bool,true,2025-09-07T06:38:24.205528
+ui,debug_mode,false,bool,true,2025-09-07T06:38:24.205528
+ui,theme,Light,str,true,2025-09-07T06:38:24.205528

@@ -1,0 +1,29 @@
+{
+  "session_id": "session_1757222248",
+  "timestamp": 1757223001.9063146,
+  "chat_history": [
+    {
+      "role": "user",
+      "content": "Hi can you play with me",
+      "timestamp": 1757222798.5613344
+    },
+    {
+      "role": "assistant",
+      "content": "This is a mock response. In a real implementation, this would use the Google GenAI SDK to generate actual AI responses.",
+      "timestamp": 1757222801.3238707,
+      "metadata": {
+        "model": "gemini-2.5-pro",
+        "response_time": 2.7581417560577393,
+        "tokens": 27,
+        "cost": 0.0027,
+        "temperature": 0.7,
+        "thinking_budget": 0
+      }
+    }
+  ],
+  "settings": {
+    "model": "gemini-2.5-pro",
+    "temperature": 0.7,
+    "thinking_budget": 0
+  }
+}

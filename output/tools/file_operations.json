@@ -1,0 +1,27 @@
+{
+  "name": "file_operations",
+  "description": "Perform basic file operations (read, write, list files)",
+  "category": "utility",
+  "parameters": [
+    {
+      "name": "operation",
+      "type": "string",
+      "description": "Operation type: read, write, list, or exists",
+      "required": true
+    },
+    {
+      "name": "filename",
+      "type": "string",
+      "description": "File path relative to temp directory",
+      "required": true
+    },
+    {
+      "name": "content",
+      "type": "string",
+      "description": "Content to write (for write operation)",
+      "required": false
+    }
+  ],
+  "code": "file_operations.py",
+  "enabled": true
+}

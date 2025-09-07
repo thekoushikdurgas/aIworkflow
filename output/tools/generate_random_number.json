@@ -1,0 +1,21 @@
+{
+  "name": "generate_random_number",
+  "description": "Generate a random number within a specified range",
+  "category": "utility",
+  "parameters": [
+    {
+      "name": "min_value",
+      "type": "integer",
+      "description": "Minimum value (inclusive)",
+      "required": false
+    },
+    {
+      "name": "max_value",
+      "type": "integer",
+      "description": "Maximum value (inclusive)",
+      "required": false
+    }
+  ],
+  "code": "generate_random_number.py",
+  "enabled": true
+}

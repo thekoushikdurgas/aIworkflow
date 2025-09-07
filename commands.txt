@@ -1,0 +1,53 @@
+# Installation Commands
+pip install -r requirements.txt
+python -m streamlit run app.py
+
+python3 -Bc "import pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]"
+python3 -Bc "import pathlib; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]"
+
+# Run the main application
+streamlit run app.py
+
+# Alternative way to run the application
+
+python -m streamlit run app_refactored.py
+
+# Test the database functionality
+python test_database.py
+
+# Test the pagination fixes
+python test_fixes.py
+
+# View the HTML demo (open in browser)
+# Open demo.html in your web browser to see the modern table design
+
+# Additional useful commands
+# Install specific packages if needed
+pip install st-aggrid
+pip install streamlit-option-menu
+pip install plotly
+
+# Check installed packages
+pip list | grep streamlit
+
+
+git init
+git add .
+git commit -m "29-8-2025"
+git remote add origin https://github.com/thekoushikdurgas/aIworkflow.git
+git branch -M main
+git push -u origin main -f
+
+
+git init
+git remote add origin https://github.com/thekoushikdurgas/aIworkflow.git
+git branch -M main
+
+
+
+git add .
+git commit -m "07/09/2025"
+git push -u origin main -f
+
+git config --global user.email "koushik.btech.cse.19@nitap.ac.in"
+git config --global user.name "thekoushikdurgas"
