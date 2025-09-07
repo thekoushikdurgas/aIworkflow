@@ -20,8 +20,8 @@ from google.genai.errors import APIError
 # Local imports
 from config.settings import AppSettings, get_api_key
 from config.models import get_model_info, ModelInfo
-from src.utils.logger import get_logger
-from src.utils.helpers import retry_with_backoff, format_error_message
+from utils.logger import get_logger
+from utils.helpers import retry_with_backoff, format_error_message
 
 logger = get_logger(__name__)
 

@@ -1,16 +1,35 @@
 {
-    "name": "calculate_math",
-    "description": "Safely evaluate mathematical expressions",
-    "category": "utility",
-    "parameters": [
-      {
-        "name": "expression",
-        "type": "string",
-        "description": "The expression to evaluate, e.g. 1 + 1",
-        "required": true
-      }
-    ],
-    "code": "calculate_math.py",
-    "enabled": true
-  }
+  "name": "calculate_math",
+  "description": "Safely evaluate mathematical expressions",
+  "category": "utility",
+  "input_parameters": [
+    {
+      "name": "expression",
+      "type": "string",
+      "description": "The expression to evaluate, e.g. 1 + 1",
+      "required": true
+    }
+  ],
+  "output_parameters": [
+    {
+      "name": "result",
+      "type": "number",
+      "description": "The calculated result of the expression"
+    },
+    {
+      "name": "expression_validated",
+      "type": "string",
+      "description": "The validated expression that was evaluated",
+      "format": "plain_text"
+    },
+    {
+      "name": "calculation_status",
+      "type": "string",
+      "description": "Status of the calculation (success/error)",
+      "format": "plain_text"
+    }
+  ],
+  "code": "calculate_math.py",
+  "enabled": true
+}
   

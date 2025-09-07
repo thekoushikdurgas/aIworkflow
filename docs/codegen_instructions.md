@@ -49,7 +49,7 @@ API calling the official libraries and SDKs.
 Please follow the following guidelines when generating code.
 
 You can find the official SDK documentation and code samples here:
-https://ai.google.dev/gemini-api/docs
+<https://ai.google.dev/gemini-api/docs>
 
 ## Golden Rule: Use the Correct and Current SDK
 

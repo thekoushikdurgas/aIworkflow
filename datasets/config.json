@@ -11,15 +11,15 @@
     "top_p": 0.95,
     "top_k": 40,
     "max_output_tokens": 2048,
-    "thinking_budget": 0,
-    "system_instruction": "",
+    "thinking_budget": 1000,
+    "system_instruction": "You are a business analyst AI assistant. Provide data-driven insights and strategic recommendations. Focus on:\n\n• Analyzing business problems systematically\n• Providing actionable recommendations\n• Using data and metrics to support your insights\n• Considering multiple perspectives and stakeholders\n• Presenting information in a clear, professional manner\n\nWhen analyzing data or business scenarios, break down complex problems into manageable components and always consider the business impact of your recommendations.",
     "safety_settings": "{\"hate_speech\": \"BLOCK_MEDIUM_AND_ABOVE\", \"dangerous_content\": \"BLOCK_MEDIUM_AND_ABOVE\", \"harassment\": \"BLOCK_MEDIUM_AND_ABOVE\", \"sexually_explicit\": \"BLOCK_MEDIUM_AND_ABOVE\"}"
   },
   "chat": {
     "current_chat_session": "",
     "chat_sessions": {},
     "stream_responses": true,
-    "enable_function_calling": false
+    "enable_function_calling": true
   },
   "file": {
     "uploaded_files": {}
@@ -46,7 +46,7 @@
   "_metadata": {
     "version": "1.0.0",
     "format": "json",
-    "last_updated": "2025-09-07T12:52:44.960544"
+    "last_updated": "2025-09-07T23:11:45.835854"
   },
   "test": {
     "key": "value"

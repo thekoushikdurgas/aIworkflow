@@ -2,7 +2,7 @@
   "name": "search_web",
   "description": "Search the web for information (mock implementation for demo)",
   "category": "information",
-  "parameters": [
+  "input_parameters": [
     {
       "name": "query",
       "type": "string",
@@ -14,6 +14,32 @@
       "type": "integer",
       "description": "Number of results to return (1-10)",
       "required": false
+    }
+  ],
+  "output_parameters": [
+    {
+      "name": "search_results",
+      "type": "array",
+      "item_type": "object",
+      "description": "List of search result objects with title, URL, and snippet",
+      "format": "json"
+    },
+    {
+      "name": "formatted_results",
+      "type": "string",
+      "description": "Human-readable formatted search results",
+      "format": "markdown"
+    },
+    {
+      "name": "query_processed",
+      "type": "string",
+      "description": "The processed search query",
+      "format": "plain_text"
+    },
+    {
+      "name": "result_count",
+      "type": "integer",
+      "description": "Number of results returned"
     }
   ],
   "code": "search_web.py",

@@ -7,6 +7,9 @@ from config.settings import AppSettings
 import os
 import subprocess
 import platform
+from utils.logger import get_logger
+from utils.storage import StoragePaths
+logger = get_logger(__name__)
 
 
 
@@ -22,7 +25,12 @@ def check_prerequisites():
         missing_items.append("Google API Key or Vertex AI project configuration")
     
     # Check for required directories
-    required_dirs = ['output', 'output/logs', 'output/sessions', 'output/media']
+    required_dirs = [
+        str(StoragePaths.ROOT_MAP['@output']),
+        str(StoragePaths.ROOT_MAP['@logs']),
+        str(StoragePaths.ROOT_MAP['@sessions']),
+        str(StoragePaths.ROOT_MAP['@media'])
+    ]
     for dir_path in required_dirs:
         if not os.path.exists(dir_path):
             try:
@@ -31,13 +39,148 @@ def check_prerequisites():
                 missing_items.append(f"Unable to create directory {dir_path}: {str(e)}")
     
     return missing_items
+
+def apply_theme(theme):
+    """Apply theme CSS to the application."""
+    if theme == 'dark':
+        st.markdown("""
+        <style>
+        .stApp {
+            background-color: #0e1117;
+            color: #fafafa;
+        }
+        
+        .stApp > header {
+            background-color: #1e1e1e;
+        }
+        
+        .stSidebar {
+            background-color: #1e1e1e;
+        }
+        
+        .stSidebar .stSelectbox > div > div {
+            background-color: #2d2d2d;
+            color: #fafafa;
+        }
+        
+        .stButton > button {
+            background-color: #2d2d2d;
+            color: #fafafa;
+            border: 1px solid #4a4a4a;
+        }
+        
+        .stButton > button:hover {
+            background-color: #3d3d3d;
+            border-color: #5a5a5a;
+        }
+        
+        .stTextInput > div > div > input {
+            background-color: #2d2d2d;
+            color: #fafafa;
+            border: 1px solid #4a4a4a;
+        }
+        
+        .stTextArea > div > div > textarea {
+            background-color: #2d2d2d;
+            color: #fafafa;
+            border: 1px solid #4a4a4a;
+        }
+        
+        .stSelectbox > div > div {
+            background-color: #2d2d2d;
+            color: #fafafa;
+        }
+        
+        .stSlider > div > div > div {
+            background-color: #2d2d2d;
+        }
+        
+        .stExpander {
+            background-color: #1e1e1e;
+            border: 1px solid #4a4a4a;
+        }
+        
+        .stExpander > div {
+            background-color: #1e1e1e;
+        }
+        
+        .stSuccess {
+            background-color: #1e3a1e;
+            border: 1px solid #2d5a2d;
+        }
+        
+        .stError {
+            background-color: #3a1e1e;
+            border: 1px solid #5a2d2d;
+        }
+        
+        .stWarning {
+            background-color: #3a3a1e;
+            border: 1px solid #5a5a2d;
+        }
+        
+        .stInfo {
+            background-color: #1e1e3a;
+            border: 1px solid #2d2d5a;
+        }
+        
+        /* Chat interface dark theme */
+        .stChatMessage {
+            background-color: #1e1e1e;
+        }
+        
+        .stChatMessage[data-testid="user"] {
+            background-color: #2d2d2d;
+        }
+        
+        .stChatMessage[data-testid="assistant"] {
+            background-color: #1e1e1e;
+        }
+        
+        /* Code blocks */
+        .stCode {
+            background-color: #1e1e1e;
+            border: 1px solid #4a4a4a;
+        }
+        
+        /* Tables */
+        .stTable {
+            background-color: #1e1e1e;
+        }
+        
+        .stTable table {
+            background-color: #1e1e1e;
+            color: #fafafa;
+        }
+        
+        .stTable th {
+            background-color: #2d2d2d;
+            color: #fafafa;
+        }
+        
+        .stTable td {
+            background-color: #1e1e1e;
+            color: #fafafa;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+    else:
+        # Light theme (default Streamlit theme)
+        st.markdown("""
+        <style>
+        .stApp {
+            background-color: #ffffff;
+            color: #262730;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
 def render_header():
     """Render the application header."""
     settings = st.session_state.get('settings', AppSettings())
+    current_theme = st.session_state.get('theme', 'light')
+    theme_icon = "🌙" if current_theme == 'dark' else "☀️"
     
-    # col1, col2, col3 = st.columns([1, 2, 1])
-    
-    # with col2:
     st.markdown(f"""
         <div style="text-align: center; padding: 1rem 0;">
             <h1 style="margin: 0; color: #1f77b4;">
@@ -45,6 +188,9 @@ def render_header():
             </h1>
             <p style="margin: 0.5rem 0 0 0; color: #666; font-size: 1.1rem;">
                 Powered by Google GenAI SDK
+            </p>
+            <p style="margin: 0.3rem 0 0 0; color: #888; font-size: 0.9rem;">
+                {theme_icon} {current_theme.title()} Theme
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -99,6 +245,10 @@ def render_footer():
 def render_sidebar():
     """Render the application sidebar."""
     
+    # Apply theme
+    current_theme = st.session_state.get('theme', 'light')
+    apply_theme(current_theme)
+    
     with st.sidebar:
         # st.markdown("## ⚙️ Quick Settings")
         
@@ -125,6 +275,7 @@ def render_sidebar():
             "Model Config", 
             "Media Studio",
             "Tool Workshop",
+            "Workflows",
             "Sessions"
         ]
         
@@ -133,6 +284,7 @@ def render_sidebar():
             "Model Config": "⚙️", 
             "Media Studio": "🎨",
             "Tool Workshop": "🔧",
+            "Workflows": "🔗",
             "Sessions": "📝"
         }
         
@@ -243,6 +395,21 @@ def render_sidebar():
         # Quick actions
         st.markdown("### 🚀 Quick Actions")
         
+        # Theme toggle
+        current_theme = st.session_state.get('theme', 'light')
+        
+        # Show current theme status
+        if current_theme == 'light':
+            st.info("☀️ Light Theme Active")
+            if st.button("🌙 Switch to Dark", use_container_width=True):
+                st.session_state.theme = 'dark'
+                st.rerun()
+        else:
+            st.info("🌙 Dark Theme Active")
+            if st.button("☀️ Switch to Light", use_container_width=True):
+                st.session_state.theme = 'light'
+                st.rerun()
+        
         if st.button("🗑️ Clear Cache", use_container_width=True):
             # Clear session state cache
             for key in st.session_state.keys():
@@ -252,7 +419,7 @@ def render_sidebar():
         
         if st.button("📁 Open Output Folder", use_container_width=True):
             
-            output_dir = "output"
+            output_dir = str(StoragePaths.ROOT_MAP['@output'])
             os.makedirs(output_dir, exist_ok=True)
             
             try:
@@ -263,8 +430,9 @@ def render_sidebar():
                 else:  # Linux
                     subprocess.run(["xdg-open", output_dir])
                 st.success("Output folder opened!")
-            except:
+            except Exception as e:
                 st.info(f"Output folder: {os.path.abspath(output_dir)}")
+                st.caption(f"Error opening folder: {e}")
         
         st.markdown("---")
         

@@ -1,0 +1,48 @@
+{
+  "name": "number_list_analyzer",
+  "description": "Analyze a list of numbers with statistical operations",
+  "category": "analysis",
+  "input_parameters": [
+    {
+      "name": "numbers",
+      "type": "array",
+      "item_type": "number",
+      "description": "List of numbers to analyze",
+      "required": true
+    },
+    {
+      "name": "include_details",
+      "type": "boolean",
+      "description": "Include detailed statistical analysis",
+      "required": false
+    }
+  ],
+  "output_parameters": [
+    {
+      "name": "statistical_summary",
+      "type": "object",
+      "description": "Basic statistical measures (mean, median, min, max, etc.)",
+      "format": "json"
+    },
+    {
+      "name": "analysis_report",
+      "type": "string",
+      "description": "Detailed statistical analysis report",
+      "format": "plain_text"
+    },
+    {
+      "name": "dataset_size",
+      "type": "integer",
+      "description": "Number of data points analyzed"
+    },
+    {
+      "name": "outliers_detected",
+      "type": "array",
+      "item_type": "number",
+      "description": "List of detected outlier values",
+      "format": "plain_text"
+    }
+  ],
+  "code": "number_list_analyzer.py",
+  "enabled": true
+}
