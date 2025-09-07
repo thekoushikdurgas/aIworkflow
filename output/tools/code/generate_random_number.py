@@ -3,6 +3,7 @@ Generate a random number within a specified range.
 """
 
 import random
+import json
 
 def generate_random_number(min_value: int = 1, max_value: int = 100) -> str:
     """
@@ -13,7 +14,9 @@ def generate_random_number(min_value: int = 1, max_value: int = 100) -> str:
         max_value: Maximum value (inclusive)
     
     Returns:
-        Random number as a string
+        random_number (integer): The generated random number
+        range_info (string): Information about the range used (plain_text format)
+        generation_status (string): Status of the number generation (plain_text format)
     """
     try:
         # Convert to integers if they're not already
@@ -21,10 +24,34 @@ def generate_random_number(min_value: int = 1, max_value: int = 100) -> str:
         max_val = int(max_value)
         
         if min_val > max_val:
-            return "Error: Minimum value cannot be greater than maximum value"
+            error_result = {
+                "random_number": None,
+                "range_info": f"Invalid range: {min_val} to {max_val}",
+                "generation_status": "error - minimum value greater than maximum value"
+            }
+            return json.dumps(error_result, indent=2)
         
         random_num = random.randint(min_val, max_val)
-        return f"Random number between {min_val} and {max_val}: {random_num}"
         
+        result = {
+            "random_number": random_num,
+            "range_info": f"Generated number in range {min_val} to {max_val} (inclusive)",
+            "generation_status": "success"
+        }
+        
+        return json.dumps(result, indent=2)
+        
+    except ValueError as e:
+        error_result = {
+            "random_number": None,
+            "range_info": f"Invalid input values: {min_value}, {max_value}",
+            "generation_status": f"error - invalid input: {str(e)}"
+        }
+        return json.dumps(error_result, indent=2)
     except Exception as e:
-        return f"Error generating random number: {str(e)}"
+        error_result = {
+            "random_number": None,
+            "range_info": f"Range: {min_value} to {max_value}",
+            "generation_status": f"error - {str(e)}"
+        }
+        return json.dumps(error_result, indent=2)

@@ -2,7 +2,7 @@
   "name": "file_operations",
   "description": "Perform basic file operations (read, write, list files)",
   "category": "utility",
-  "parameters": [
+  "input_parameters": [
     {
       "name": "operation",
       "type": "string",
@@ -20,6 +20,33 @@
       "type": "string",
       "description": "Content to write (for write operation)",
       "required": false
+    }
+  ],
+  "output_parameters": [
+    {
+      "name": "operation_result",
+      "type": "string",
+      "description": "Result of the file operation",
+      "format": "plain_text"
+    },
+    {
+      "name": "file_content",
+      "type": "string",
+      "description": "Content of the file (for read operations)",
+      "format": "plain_text"
+    },
+    {
+      "name": "file_list",
+      "type": "array",
+      "item_type": "string",
+      "description": "List of files (for list operations)",
+      "format": "plain_text"
+    },
+    {
+      "name": "operation_status",
+      "type": "string",
+      "description": "Success or error status of the operation",
+      "format": "plain_text"
     }
   ],
   "code": "file_operations.py",

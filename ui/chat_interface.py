@@ -7,8 +7,15 @@ import time
 import json
 from typing import List, Dict, Any
 from config.settings import AppSettings, save_json_config
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 import traceback
+from pathlib import Path
+from utils.storage import StoragePaths, read_json
+from contextlib import suppress
+
+# Optional GenAI client import (fallback to mock if unavailable)
+with suppress(Exception):
+    from core.client import GenAIClient  # type: ignore
 
 logger = get_logger(__name__)
 
@@ -61,102 +68,209 @@ class ChatInterface:
         
         # Get JSON config
         json_config = getattr(self.settings, '_json_config', {})
+        # Derived runtime configuration with sane defaults
+        model_cfg = json_config.get('model', {})
+        chat_cfg = json_config.get('chat', {})
+        ui_cfg = json_config.get('ui', {})
+        selected_model = model_cfg.get('selected_model', 'gemini-2.5-flash')
+        try:
+            temperature = float(model_cfg.get('temperature', 0.7))
+        except Exception:
+            temperature = 0.7
+        try:
+            thinking_budget = int(model_cfg.get('thinking_budget', 0))
+        except Exception:
+            thinking_budget = 0
+        system_instruction = model_cfg.get('system_instruction', '')
+        stream_responses = bool(chat_cfg.get('stream_responses', True))
+        function_calling_enabled = bool(chat_cfg.get('enable_function_calling', False))
         
-        # Chat configuration bar
-        with st.expander("💡 Chat Settings", expanded=False):
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                # Model selection (synced with sidebar)
+        # Top controls: theme, model, reasoning, system instruction
+        with st.container():
+            cols = st.columns([3, 3, 3, 3])
+            with cols[0]:
+                st.markdown("### ⚙️ Configuration")
+                current_theme = ui_cfg.get('theme', 'Light')
+                theme_options = ["Light", "Dark", "Auto"]
+                theme_sel = st.selectbox("Theme", options=theme_options, index=theme_options.index(current_theme) if current_theme in theme_options else 0)
+                if theme_sel != current_theme:
+                    if save_json_config({'ui': {'theme': theme_sel}}):
+                        st.toast("Theme updated", icon="✅")
+                        st.rerun()
+            with cols[1]:
+                st.markdown("### 🤖 Model")
                 available_models = [
-                    "gemini-2.5-pro", 
-                    "gemini-2.5-flash", 
+                    "gemini-2.5-pro",
+                    "gemini-2.5-flash",
                     "gemini-2.5-flash-lite",
                     "gemini-2.0-flash"
                 ]
-                
-                current_model = json_config.get('model', {}).get('selected_model', 'gemini-2.5-flash')
-                selected_model = st.selectbox(
-                    "Model",
-                    available_models,
-                    index=available_models.index(current_model) if current_model in available_models else 1,
-                    key="chat_model"
-                )
-            
-            with col2:
-                # System instruction
-                system_instruction = st.text_area(
-                    "System Instruction",
-                    value=json_config.get('model', {}).get('system_instruction', ''),
-                    height=100,
-                    key="chat_system_instruction",
-                    help="Set the AI's behavior and personality"
-                )
-            
-            with col3:
-                # Advanced settings
-                temperature = st.slider(
-                    "Temperature",
-                    min_value=0.0,
-                    max_value=2.0,
-                    value=float(json_config.get('model', {}).get('temperature', 0.7)),
-                    step=0.1,
-                    key="chat_temperature"
-                )
-                
-                thinking_budget = st.number_input(
-                    "Thinking Budget",
-                    min_value=0,
-                    max_value=10000,
-                    value=int(json_config.get('model', {}).get('thinking_budget', 0)),
-                    step=100,
-                    key="chat_thinking_budget",
-                    help="0 = no thinking, higher = more reasoning"
-                )
-                
-                enable_streaming = json_config.get('chat', {}).get('stream_responses', True)
-                stream_responses = st.checkbox(
-                    "Stream Responses",
-                    value=enable_streaming,
-                    key="chat_streaming"
-                )
-        # Function calling configuration
-        with st.expander("🔧 Function Calling", expanded=False):
-            """Render the function calling configuration section."""
-            # Get JSON config
-            json_config = getattr(self.settings, '_json_config', {})
-            chat_config = json_config.get('chat', {})
-            
-            # Function calling status
-            function_calling_enabled = chat_config.get('enable_function_calling', False)
-            
-            col1, col2 = st.columns([3, 1])
-            
-            with col1:
-                st.markdown("## 🔧 Function Calling")
-                
-                new_function_calling = st.checkbox(
-                    "Enable Function Calling",
-                    value=function_calling_enabled,
-                    help="Allow AI to call custom functions and tools"
-                )
-                
-                if new_function_calling != function_calling_enabled:
-                    config_updates = {
-                        'chat': {
-                            'enable_function_calling': new_function_calling
+                selected_model = st.selectbox("Model", available_models, index=available_models.index(selected_model) if selected_model in available_models else 1, key="chat_model")
+                temperature = st.slider("Temperature", 0.0, 2.0, value=temperature, step=0.1, key="chat_temperature")
+            with cols[2]:
+                st.markdown("### 🧠 Reasoning & Stream")
+                thinking_budget = st.number_input("Thinking Budget", min_value=0, max_value=10000, value=thinking_budget, step=100, key="chat_thinking_budget")
+                stream_responses = st.checkbox("Stream Responses", value=stream_responses, key="chat_streaming")
+            with cols[3]:
+                st.markdown("### 📜 System Instruction")
+                system_instruction = st.text_area("", value=system_instruction, height=120, key="chat_system_instruction")
+            # Persist if any changes
+            if save_json_config({
+                'model': {
+                    'selected_model': selected_model,
+                    'temperature': float(temperature),
+                    'thinking_budget': int(thinking_budget),
+                    'system_instruction': system_instruction
+                },
+                'chat': {
+                    'stream_responses': bool(stream_responses)
+                }
+            }):
+                pass
+
+        # Templates, tools, workflows
+        with st.expander("📋 Templates & Resources", expanded=False):
+            templates_dir = StoragePaths.ROOT_MAP["@templates"]
+            available_templates = []
+            try:
+                if templates_dir.exists():
+                    for tf in templates_dir.glob("*.json"):
+                        try:
+                            cfg = read_json("@templates", f"{tf.stem}.json")
+                            available_templates.append((tf.stem, cfg))
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+            if available_templates:
+                tpl_names = [cfg.get('name', key.replace('_',' ').title()) for key, cfg in available_templates]
+                sel_idx = st.selectbox("Apply Template", options=list(range(len(available_templates))), format_func=lambda i: tpl_names[i], key="chat_tpl_select")
+                if st.button("Apply Template", key="apply_tpl_btn"):
+                    tkey, tcfg = available_templates[sel_idx]
+                    gen = tcfg.get('generation_parameters', {})
+                    updates = {
+                        'model': {
+                            'selected_model': tcfg.get('model_selection', {}).get('primary_model', selected_model),
+                            'temperature': float(gen.get('temperature', temperature)),
+                            'thinking_budget': int(gen.get('thinking_budget', thinking_budget)),
+                            'system_instruction': tcfg.get('system_instruction', system_instruction)
                         }
                     }
-                    
-                    if save_json_config(config_updates):
-                        st.success("✅ Function calling setting updated!")
+                    if save_json_config(updates):
+                        st.success("✅ Applied template")
                         st.rerun()
+            else:
+                st.caption("No templates found in output/templates/")
+
+            tools_dir = StoragePaths.ROOT_MAP["@tools"]
+            tool_items = []
+            try:
+                if tools_dir.exists():
+                    for jf in tools_dir.glob("*.json"):
+                        try:
+                            cfg = read_json("@tools", f"{jf.stem}.json")
+                            tool_items.append((jf.stem, cfg))
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+            if tool_items:
+                st.selectbox("Available Tools", options=[name for name, _ in sorted(tool_items)], key="chat_tool_select")
+
+            workflows_dir = StoragePaths.ROOT_MAP["@workflows"]
+            workflow_items = []
+            try:
+                if workflows_dir.exists():
+                    for jf in workflows_dir.glob("*.json"):
+                        try:
+                            cfg = read_json("@workflows", f"{jf.stem}.json")
+                            workflow_items.append((jf.stem, cfg))
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+            if workflow_items:
+                st.selectbox("Available Workflows", options=[name for name, _ in sorted(workflow_items)], key="chat_workflow_select")
+        # # Function calling configuration
+        # with st.expander("🔧 Function Calling", expanded=False):
+        #     """Render the function calling configuration section."""
+        #     # Get JSON config
+        #     json_config = getattr(self.settings, '_json_config', {})
+        #     chat_config = json_config.get('chat', {})
             
-            with col2:
-                if function_calling_enabled:
-                    st.success("🟢 Function Calling Enabled")
-                else:
-                    st.warning("🔴 Function Calling Disabled")
+        #     # Function calling status
+        #     function_calling_enabled = chat_config.get('enable_function_calling', False)
+            
+        #     col1, col2 = st.columns([3, 1])
+            
+        #     with col1:
+        #         st.markdown("## 🔧 Function Calling")
+                
+        #         new_function_calling = st.checkbox(
+        #             "Enable Function Calling",
+        #             value=function_calling_enabled,
+        #             help="Allow AI to call custom functions and tools"
+        #         )
+                
+        #         if new_function_calling != function_calling_enabled:
+        #             config_updates = {
+        #                 'chat': {
+        #                     'enable_function_calling': new_function_calling
+        #                 }
+        #             }
+                    
+        #             if save_json_config(config_updates):
+        #                 st.success("✅ Function calling setting updated!")
+        #                 st.rerun()
+            
+        #     with col2:
+        #         if function_calling_enabled:
+        #             st.success("🟢 Function Calling Enabled")
+        #         else:
+        #             st.warning("🔴 Function Calling Disabled")
+            
+            # # List all tools
+            # st.markdown("---")
+            # st.markdown("### 🛠️ Available Tools")
+            # tools_dir = StoragePaths.ROOT_MAP["@tools"]
+            # tool_items = []
+            # try:
+            #     if tools_dir.exists():
+            #         for jf in tools_dir.glob("*.json"):
+            #             try:
+            #                 cfg = read_json("@tools", f"{jf.stem}.json")
+            #                 tool_items.append((jf.stem, cfg))
+            #             except Exception:
+            #                 pass
+            # except Exception:
+            #     pass
+            
+            # if tool_items:
+            #     for name, cfg in sorted(tool_items, key=lambda x: x[0]):
+            #         with st.expander(f"🔧 {name}", expanded=False):
+            #             st.caption(cfg.get('description', 'No description'))
+            #             st.caption(f"Category: {cfg.get('category', 'unknown')}")
+            #             enabled = cfg.get('enabled', True)
+            #             st.caption("Status: " + ("✅ Enabled" if enabled else "❌ Disabled"))
+            #             # Show parameters brief if present
+            #             input_params = cfg.get('input_parameters', cfg.get('parameters', []))
+            #             output_params = cfg.get('output_parameters', [])
+            #             if input_params:
+            #                 st.markdown("**📥 Inputs:**")
+            #                 for p in input_params:
+            #                     pname = p.get('name', 'param')
+            #                     ptype = p.get('type', 'string')
+            #                     req = " (required)" if p.get('required', False) else ""
+            #                     st.caption(f"• {pname}: {ptype}{req}")
+            #             if output_params:
+            #                 st.markdown("**📤 Outputs:**")
+            #                 for p in output_params:
+            #                     pname = p.get('name', 'result')
+            #                     ptype = p.get('type', 'string')
+            #                     fmt = p.get('format', 'plain_text')
+            #                     st.caption(f"• {pname}: {ptype} ({fmt})")
+            # else:
+            #     st.caption("No tools found in output/tools/")
         
         # Use function_calling_enabled IN _handle_user_message
         
@@ -286,8 +400,7 @@ class ChatInterface:
     
     def _handle_user_message(self, user_input: str, uploaded_files, model: str, 
                            temperature: float, thinking_budget: int, 
-                           system_instruction: str, stream_responses: bool,
-                           function_calling_enabled: bool):
+                           system_instruction: str, stream_responses: bool):
         """Handle user message and get AI response."""
         
         try:
@@ -326,17 +439,43 @@ class ChatInterface:
                 
                 start_time = time.time()
                 
-                # Mock AI response (replace with actual GenAI API call)
-                if stream_responses:
-                    response_text = self._get_streaming_response(
-                        user_input, model, temperature, thinking_budget, 
-                        system_instruction, response_placeholder
-                    )
-                else:
-                    response_text = self._get_response(
-                        user_input, model, temperature, thinking_budget, system_instruction
-                    )
-                    response_placeholder.markdown(response_text)
+                # Try real GenAI response; fallback to mock
+                response_text = None
+                try:
+                    if 'GenAIClient' in globals():
+                        client = GenAIClient(self.settings)
+                        cfg = {
+                            'temperature': float(temperature),
+                            'max_output_tokens': int(self.settings.default_max_tokens),
+                        }
+                        if thinking_budget and thinking_budget > 0:
+                            cfg['thinking_budget'] = int(thinking_budget)
+                        prompt = user_input if not system_instruction else f"{system_instruction}\n\nUser: {user_input}"
+                        if stream_responses:
+                            chunks = client.generate_content_stream(model=model, contents=prompt, config=cfg)
+                            collected = []
+                            for chunk in chunks:
+                                if chunk.text:
+                                    collected.append(chunk.text)
+                                    response_placeholder.markdown(" ".join(collected) + "▊")
+                            response_text = " ".join(collected).strip()
+                        else:
+                            res = client.generate_content(model=model, contents=prompt, config=cfg)
+                            response_text = (res.text or "").strip()
+                            response_placeholder.markdown(response_text)
+                    else:
+                        raise RuntimeError("GenAIClient unavailable")
+                except Exception:
+                    if stream_responses:
+                        response_text = self._get_streaming_response(
+                            user_input, model, temperature, thinking_budget, 
+                            system_instruction, response_placeholder
+                        )
+                    else:
+                        response_text = self._get_response(
+                            user_input, model, temperature, thinking_budget, system_instruction
+                        )
+                        response_placeholder.markdown(response_text)
                 
                 response_time = time.time() - start_time
                 

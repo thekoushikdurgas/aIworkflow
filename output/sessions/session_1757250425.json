@@ -1,0 +1,50 @@
+{
+  "session_id": "session_1757250425",
+  "timestamp": 1757250470.988575,
+  "chat_history": [],
+  "settings": {
+    "model": null,
+    "temperature": null,
+    "thinking_budget": null
+  },
+  "tool_history": [
+    {
+      "timestamp": 1757250735.9195027,
+      "tool_name": "file_analyzer",
+      "parameters": {
+        "uploaded_file": null,
+        "analysis_type": "content"
+      },
+      "result": "{\n  \"file_info\": {\n    \"error\": \"No file uploaded\"\n  },\n  \"content_preview\": \"No file content available\",\n  \"analysis_report\": \"# File Analysis Report\\n\\nNo file was uploaded for analysis.\",\n  \"file_stats\": {\n    \"error\": \"No file to analyze\"\n  }\n}",
+      "execution_time": 0.091,
+      "success": true
+    },
+    {
+      "timestamp": 1757250735.9249613,
+      "tool_name": "task_list_manager",
+      "parameters": {
+        "task_names": [
+          "Parse file",
+          "Generate report",
+          "Review content"
+        ],
+        "completion_status": [
+          true,
+          true,
+          false
+        ],
+        "show_summary": true
+      },
+      "result": "{\n  \"task_report\": \"Task List Status:\\n====================\\n1. \\u2705 Parse file [COMPLETED]\\n2. \\u2705 Generate report [COMPLETED]\\n3. \\u274c Review content [PENDING]\\n\\n====================\\nSUMMARY:\\nTotal Tasks: 3\\nCompleted: 2 (66.7%)\\nPending: 1 (33.3%)\\n\\nCompleted Tasks:\\n\\u2022 Parse file\\n\\u2022 Generate report\\n\\nPending Tasks:\\n\\u2022 Review content\",\n  \"completion_summary\": {\n    \"total_tasks\": 3,\n    \"completed_count\": 2,\n    \"pending_count\": 1,\n    \"completion_percentage\": 66.7,\n    \"status\": \"success\"\n  },\n  \"completed_tasks\": [\n    \"Parse file\",\n    \"Generate report\"\n  ],\n  \"pending_tasks\": [\n    \"Review content\"\n  ]\n}",
+      "execution_time": 0.003,
+      "success": true
+    }
+  ],
+  "workflow_history": [
+    {
+      "timestamp": 1757250735.9357307,
+      "workflow_name": "file_review_pipeline",
+      "inputs": {
+        "uploaded_file": {
+          "name": "model_config.json",
+          "content": 

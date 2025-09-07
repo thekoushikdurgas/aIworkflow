@@ -20,13 +20,15 @@ from pathlib import Path
 
 # Import core components
 from config.settings import AppSettings, load_settings
-from src.utils.logger import setup_logging, get_logger
-from src.ui.sidebar import render_sidebar
-from src.ui.chat_interface import ChatInterface
-from src.ui.model_config import ModelConfigInterface
-from src.ui.media_studio import MediaStudioInterface
-from src.ui.tool_workshop import ToolWorkshopInterface
-from src.ui.session_manager import SessionManagerInterface
+from utils.logger import setup_logging, get_logger
+from utils.storage import StoragePaths
+from ui.sidebar import render_sidebar
+from ui.chat_interface import ChatInterface
+from ui.model_config import ModelConfigInterface
+from ui.media_studio import MediaStudioInterface
+from ui.tool_workshop import ToolWorkshopInterface
+from ui.session_manager import SessionManagerInterface
+from ui.workflows import WorkflowsInterface
 
 # Configure Streamlit page
 st.set_page_config(
@@ -72,6 +74,12 @@ def initialize_app():
             st.session_state.current_page = "Chat"
             st.session_state.user_authenticated = True  # Simple auth for now
             
+        # Ensure storage roots exist (best-effort)
+        for root in StoragePaths.ROOT_MAP.values():
+            try:
+                root.mkdir(parents=True, exist_ok=True)
+            except Exception:
+                pass
         # Setup logging
         setup_logging(settings.log_level, settings.log_directory)
         
@@ -122,6 +130,10 @@ def render_main_content():
         elif current_page == "Tool Workshop":
             tool_interface = ToolWorkshopInterface(settings)
             tool_interface.render()
+            
+        elif current_page == "Workflows":
+            workflows_interface = WorkflowsInterface(settings)
+            workflows_interface.render()
             
         elif current_page == "Sessions":
             session_interface = SessionManagerInterface(settings)

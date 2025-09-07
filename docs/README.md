@@ -4,7 +4,7 @@
 ![Python support](https://img.shields.io/pypi/pyversions/google-genai)
 [![PyPI - Downloads](https://img.shields.io/pypi/dw/google-genai)](https://pypistats.org/packages/google-genai)
 
---------
+--------txt
 **Documentation:** <https://googleapis.github.io/python-genai/>
 
 -----
@@ -134,7 +134,6 @@ client=Client(..., http_options=http_options)
 Both httpx and aiohttp libraries use `urllib.request.getproxies` from
 environment variables. Before client initialization, you may set proxy (and
 optional SSL_CERT_FILE) by setting the environment variables:
-
 
 ```bash
 export HTTPS_PROXY='http://username:password@proxy_uri:port'
@@ -773,6 +772,7 @@ output might be lower in quality.
 #### JSON Schema support
 
 Schemas can be provided as standard JSON schema.
+
 ```python
 user_profile = {
     'properties': {
@@ -994,7 +994,6 @@ print(response.text)
 ```
 
 ### Generate Content (Asynchronous Streaming)
-
 
 ```python
 async for chunk in await client.aio.models.generate_content_stream(
@@ -1366,7 +1365,7 @@ cached_content = client.caches.create(
 )
 ```
 
-### Get
+### Get 1
 
 ```python
 cached_content = client.caches.get(name=cached_content.name)
@@ -1511,7 +1510,6 @@ model = client.models.update(
 print(model)
 ```
 
-
 ### List Tuning Jobs
 
 ```python
@@ -1589,6 +1587,7 @@ For example myrequests.json:
  "Explain how AI works in a few words"}]}], "generation_config": {"response_modalities": ["TEXT"]}}}
 {"key":"request_2", "request": {"contents": [{"parts": [{"text": "Explain how Crypto works in a few words"}]}]}}
 ```
+
 Then upload the file.
 
 ```python
@@ -1604,7 +1603,6 @@ batch_job = client.batches.create(
     src="files/file_name",
 )
 ```
-
 
 ```python
 # Get a job by name

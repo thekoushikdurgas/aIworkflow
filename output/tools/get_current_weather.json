@@ -2,12 +2,43 @@
   "name": "get_current_weather",
   "description": "Get current weather information for a location",
   "category": "utility",
-  "parameters": [
+  "input_parameters": [
     {
       "name": "location",
       "type": "string",
       "description": "The city and state, e.g. San Francisco, CA",
       "required": true
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "description": "Temperature unit: celsius or fahrenheit",
+      "required": false
+    }
+  ],
+  "output_parameters": [
+    {
+      "name": "weather_report",
+      "type": "string",
+      "description": "Formatted weather information",
+      "format": "plain_text"
+    },
+    {
+      "name": "temperature",
+      "type": "number",
+      "description": "Current temperature in specified unit"
+    },
+    {
+      "name": "conditions",
+      "type": "string",
+      "description": "Weather conditions (sunny, cloudy, etc.)",
+      "format": "plain_text"
+    },
+    {
+      "name": "location_info",
+      "type": "string",
+      "description": "Information about the location queried",
+      "format": "plain_text"
     }
   ],
   "code": "get_current_weather.py",

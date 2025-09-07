@@ -23,23 +23,27 @@ A comprehensive AI agent built with Streamlit and Google's GenAI SDK, supporting
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd streamlit_genai_agent
    ```
 
 2. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    # Edit .env with your API keys
    ```
 
 4. **Run the application**
+
    ```bash
    streamlit run main.py
    ```

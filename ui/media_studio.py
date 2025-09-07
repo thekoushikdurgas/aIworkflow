@@ -5,7 +5,7 @@ Media studio interface for image and video generation.
 import streamlit as st
 import json
 from config.settings import AppSettings
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger(__name__)
 

@@ -2,12 +2,37 @@
   "name": "get_current_time",
   "description": "Get current date and time in specified timezone",
   "category": "information",
-  "parameters": [
+  "input_parameters": [
     {
       "name": "timezone",
       "type": "string",
       "description": "Timezone (e.g., 'UTC', 'US/Pacific', 'Europe/London')",
       "required": false
+    }
+  ],
+  "output_parameters": [
+    {
+      "name": "current_datetime",
+      "type": "string",
+      "description": "Current date and time in specified timezone",
+      "format": "plain_text"
+    },
+    {
+      "name": "timezone_info",
+      "type": "string",
+      "description": "Information about the timezone used",
+      "format": "plain_text"
+    },
+    {
+      "name": "iso_format",
+      "type": "string",
+      "description": "Date and time in ISO format",
+      "format": "plain_text"
+    },
+    {
+      "name": "timestamp",
+      "type": "number",
+      "description": "Unix timestamp"
     }
   ],
   "code": "get_current_time.py",

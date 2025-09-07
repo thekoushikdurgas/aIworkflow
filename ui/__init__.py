@@ -8,6 +8,7 @@ from .model_config import ModelConfigInterface
 from .media_studio import MediaStudioInterface
 from .tool_workshop import ToolWorkshopInterface
 from .session_manager import SessionManagerInterface
+from .workflows import WorkflowsInterface
 
 __all__ = [
     'render_sidebar',
@@ -15,5 +16,6 @@ __all__ = [
     'ModelConfigInterface',
     'MediaStudioInterface', 
     'ToolWorkshopInterface',
-    'SessionManagerInterface'
+    'SessionManagerInterface',
+    'WorkflowsInterface'
 ]

@@ -84,7 +84,7 @@ Example:
 
 The logging system is automatically initialized when the application starts. No additional configuration is required.
 
-### Key Features:
+### Key Features
 
 - **Automatic rotation**: Log files rotate when they reach size limits
 - **Colored console output**: Different colors for different log levels
@@ -97,7 +97,7 @@ The logging system is automatically initialized when the application starts. No 
 ### In Application Code
 
 ```python
-from src.utils.logger_config import get_logger, log_user_action, log_performance
+from utils.logger_config import get_logger, log_user_action, log_performance
 
 logger = get_logger('my_module')
 
